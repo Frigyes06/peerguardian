@@ -1,0 +1,32 @@
+name: C/C++ CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Install build dependencies
+      run: sudo apt install autoconf automake libtool libnfnetlink-dev libnetfilter-queue-dev libdbus-1-dev qtbase5-dev
+    - name: makes autogen executable
+      run: chmod +x autogen.sh
+    - name: Generate autotools
+      run: ./autogen.sh
+    - name: makes configure executable
+      run: chmod +x configure
+    - name: configure
+      run: QT_SELECT=5 ./configure
+    - name: Install dependencies
+      run: make
+    - name: Run check
+      run: make check  
+    - name: Run distcheck
+      run: make distcheck
